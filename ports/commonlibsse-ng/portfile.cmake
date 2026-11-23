@@ -12,6 +12,7 @@ vcpkg_cmake_configure(
     OPTIONS
         -DBUILD_TESTS=OFF
         -DSKSE_SUPPORT_XBYAK=ON
+        -DSKSE_SUPPORT_PATCH_SAFETY=OFF
         -DENABLE_SKYRIM_SE=ON
         -DENABLE_SKYRIM_AE=ON
         -DENABLE_SKYRIM_VR=OFF
