@@ -8,9 +8,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-cache
-
 jobs:
   build:
     name: Build AutoShotClickCasting.dll
@@ -22,15 +19,15 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup MSVC Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
+      - name: Ensure vcpkg Cache Directory
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "$env:LOCALAPPDATA\vcpkg\archives" -Force
 
       - name: Restore/Save vcpkg Binary Cache
         uses: actions/cache@v4
         with:
-          path: ${{ github.workspace }}/vcpkg-cache
+          path: ~\AppData\Local\vcpkg\archives
           key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ports/**') }}
           restore-keys: |
             vcpkg-${{ runner.os }}-
@@ -38,7 +35,7 @@ jobs:
       - name: Configure CMake
         shell: pwsh
         run: |
-          cmake -B build -S . -G Ninja `
+          cmake -B build -S . `
             -DCMAKE_BUILD_TYPE=Release `
             -DVCPKG_TARGET_TRIPLET=x64-windows-static-md `
             -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
@@ -52,7 +49,12 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path "package/SKSE/Plugins" -Force
-          Copy-Item "build/AutoShotClickCasting.dll" -Destination "package/SKSE/Plugins/"
+          $dll = Get-ChildItem -Path "build" -Filter "AutoShotClickCasting.dll" -Recurse | Select-Object -First 1
+          if (-not $dll) {
+              throw "AutoShotClickCasting.dll not found in build directory!"
+          }
+          Write-Host "Found compiled DLL at: $($dll.FullName)"
+          Copy-Item $dll.FullName -Destination "package/SKSE/Plugins/"
           
           New-Item -ItemType Directory -Path "package/MCM/Config/AutoShotClickCasting" -Force
           Copy-Item "mcm/config/config.json" -Destination "package/MCM/Config/AutoShotClickCasting/"
@@ -68,6 +70,6 @@ jobs:
         with:
           name: AutoShotClickCasting-v2.1.0-Artifacts
           path: |
-            build/AutoShotClickCasting.dll
+            package/SKSE/Plugins/AutoShotClickCasting.dll
             AutoShotClickCasting-v2.1.0.zip
           retention-days: 30
