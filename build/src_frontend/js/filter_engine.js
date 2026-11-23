@@ -9,8 +9,9 @@ const FilterEngine = (() => {
 
   // Bitset dictionary: facetName -> { val -> Uint32Array }
   const facetBitsets = {};
-  // Search tokens: itemIdx -> "name normalized search str"
+  // Search tokens & LRU cache
   const searchCorpus = [];
+  const searchCache = new Map();
 
   // Accent-folding helper (việt -> viet, Á -> a)
   function foldAccents(str) {
@@ -93,20 +94,29 @@ const FilterEngine = (() => {
 
     const { facets, search, exclude } = activeFilters;
 
-    // 1. Text search
+    // 1. Text search with LRU bitset caching
     if (search && search.trim()) {
-      const queryTokens = foldAccents(search.trim()).split(/\s+/).filter(Boolean);
-      const searchBs = createBitset();
-      for (let i = 0; i < numItems; i++) {
-        const corpus = searchCorpus[i];
-        let match = true;
-        for (let j = 0; j < queryTokens.length; j++) {
-          if (!corpus.includes(queryTokens[j])) {
-            match = false;
-            break;
+      const qKey = search.trim().toLowerCase();
+      let searchBs = searchCache.get(qKey);
+      if (!searchBs) {
+        const queryTokens = foldAccents(qKey).split(/\s+/).filter(Boolean);
+        searchBs = createBitset();
+        for (let i = 0; i < numItems; i++) {
+          const corpus = searchCorpus[i];
+          let match = true;
+          for (let j = 0; j < queryTokens.length; j++) {
+            if (!corpus.includes(queryTokens[j])) {
+              match = false;
+              break;
+            }
           }
+          if (match) setBit(searchBs, i);
         }
-        if (match) setBit(searchBs, i);
+        if (searchCache.size > 50) {
+          const firstKey = searchCache.keys().next().value;
+          searchCache.delete(firstKey);
+        }
+        searchCache.set(qKey, searchBs);
       }
       resultBitset = bitsetIntersect(resultBitset, searchBs);
     }
