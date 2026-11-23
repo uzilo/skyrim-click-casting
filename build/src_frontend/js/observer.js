@@ -1,28 +1,46 @@
 /**
- * IntersectionObserver Engine for 'Seen' Tracking & ScrollSpy Resume
+ * Lightweight IntersectionObserver Engine for 'Seen' Tracking & Location ScrollSpy
  */
 const SeenObserver = (() => {
-  let observer = null;
+  let locationSpyObserver = null;
+  let rowSeenObserver = null;
   const pendingTimers = new Map();
   let currentVisibleLocation = null;
   let currentVisibleItemId = null;
+  let resumeTimer = null;
 
   function init() {
-    if (!('IntersectionObserver' in window)) return;
+    if (typeof IntersectionObserver === 'undefined') return;
 
-    observer = new IntersectionObserver((entries) => {
+    // 1. Location-level ScrollSpy (Observes only mounted location cards, threshold: 0)
+    locationSpyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const locId = entry.target.getAttribute('data-loc-id');
+          if (locId) {
+            currentVisibleLocation = locId;
+            if (resumeTimer) clearTimeout(resumeTimer);
+            resumeTimer = setTimeout(() => {
+              AppState.setResumePoint(currentVisibleLocation, currentVisibleItemId);
+            }, 500);
+          }
+        }
+      });
+    }, {
+      rootMargin: '-50px 0px -70% 0px',
+      threshold: 0
+    });
+
+    // 2. Item-level Seen tracking (Single threshold 0.5 with 1.2s fling immunity)
+    rowSeenObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const el = entry.target;
         const itemId = el.getAttribute('data-item-id');
-        const locId = el.getAttribute('data-loc-id');
+        if (!itemId) return;
 
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-          // Track scroll position
-          if (locId) currentVisibleLocation = locId;
-          if (itemId) currentVisibleItemId = itemId;
-
-          // Set 1.2s timer for seen marking (fling immunity)
-          if (itemId && !AppState.isSeen(itemId) && !pendingTimers.has(itemId)) {
+        if (entry.isIntersecting) {
+          currentVisibleItemId = itemId;
+          if (!AppState.isSeen(itemId) && !pendingTimers.has(itemId)) {
             const timer = setTimeout(() => {
               AppState.markSeen(itemId);
               el.classList.add('is-seen');
@@ -32,36 +50,50 @@ const SeenObserver = (() => {
             pendingTimers.set(itemId, timer);
           }
         } else {
-          // Element exited or < 50% in viewport -> cancel timer
-          if (itemId && pendingTimers.has(itemId)) {
+          if (pendingTimers.has(itemId)) {
             clearTimeout(pendingTimers.get(itemId));
             pendingTimers.delete(itemId);
           }
         }
       });
-
-      // Update resume point if scrolled
-      if (currentVisibleLocation) {
-        AppState.setResumePoint(currentVisibleLocation, currentVisibleItemId);
-      }
     }, {
-      threshold: [0, 0.5, 1.0],
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0.5
     });
   }
 
-  function observe(el) {
-    if (observer && el) observer.observe(el);
+  function observeLocation(cardEl) {
+    if (locationSpyObserver && cardEl) locationSpyObserver.observe(cardEl);
   }
 
-  function unobserve(el) {
-    if (observer && el) observer.unobserve(el);
+  function unobserveLocation(cardEl) {
+    if (locationSpyObserver && cardEl) locationSpyObserver.unobserve(cardEl);
   }
 
-  return {
+  function observe(rowEl) {
+    if (rowSeenObserver && rowEl) rowSeenObserver.observe(rowEl);
+  }
+
+  function unobserve(rowEl) {
+    if (rowSeenObserver && rowEl) rowSeenObserver.unobserve(rowEl);
+  }
+
+  function setCurrentLocation(locId) {
+    if (!locId) return;
+    currentVisibleLocation = locId;
+    if (resumeTimer) clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      AppState.setResumePoint(currentVisibleLocation, currentVisibleItemId);
+    }, 600);
+  }
+
+  window.SeenObserver = {
     init,
     observe,
     unobserve,
+    observeLocation,
+    unobserveLocation,
+    setCurrentLocation,
     getCurrentLocation: () => currentVisibleLocation
   };
+  return window.SeenObserver;
 })();

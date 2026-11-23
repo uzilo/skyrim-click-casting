@@ -88,6 +88,16 @@
 }
 
 @media (max-width: 639px) {
+  /* Hardware acceleration and shadow reduction for 60fps mobile scrolling */
+  .app-header, .mobile-bottom-bar {
+    transform: translateZ(0);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .location-card {
+    box-shadow: none !important;
+  }
+
   .mobile-bottom-bar {
     display: flex;
   }

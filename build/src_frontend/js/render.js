@@ -33,6 +33,9 @@ const UIRenderer = (() => {
 
         if (entry.isIntersecting) {
           mountLocationCard(slug, card);
+          if (window.SeenObserver && SeenObserver.setCurrentLocation) {
+            SeenObserver.setCurrentLocation(slug);
+          }
         } else {
           // Unmount if element is far out of view to keep live DOM <= 2,200 nodes
           unmountLocationCard(slug, card);
@@ -246,6 +249,10 @@ const UIRenderer = (() => {
     const locData = locationRegistry.get(slug);
     if (!locData) return;
 
+    if (window.SeenObserver && SeenObserver.setCurrentLocation) {
+      SeenObserver.setCurrentLocation(slug);
+    }
+
     const { holdName, locName, items } = locData;
     const hideChecked = AppState.getState().ui.hideChecked;
     const hideByGroup = AppState.getState().ui.hideCheckedByGroup || {};
@@ -334,6 +341,11 @@ const UIRenderer = (() => {
     cardEl.innerHTML = contentHtml + rowsHtml;
     cardEl.setAttribute('data-mounted', 'true');
     cardEl.style.minHeight = '';
+
+    if (window.SeenObserver) {
+      cardEl.querySelectorAll('.item-row').forEach(r => SeenObserver.observe(r));
+      SeenObserver.observeLocation(cardEl);
+    }
   }
 
   // Unmount far card to maintain DOM node count under budget
@@ -341,6 +353,10 @@ const UIRenderer = (() => {
     if (!cardEl) cardEl = document.getElementById(`loc_${slug}`);
     if (!cardEl) return;
     if (cardEl.getAttribute('data-mounted') !== 'true') return;
+
+    if (window.SeenObserver) {
+      SeenObserver.unobserveLocation(cardEl);
+    }
 
     const locData = locationRegistry.get(slug);
     const estHeight = locData ? (52 + locData.items.length * 48) : 200;
