@@ -1,0 +1,75 @@
+name: Build SKSE Plugin
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build AutoShotClickCasting.dll
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSVC Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Setup Ninja
+        uses: ninja-build/setup-ninja@v1
+
+      - name: Restore/Save vcpkg Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.VCPKG_INSTALLATION_ROOT }}/installed
+            ~/.cache/vcpkg
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'ports/**') }}
+          restore-keys: |
+            vcpkg-${{ runner.os }}-
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -B build -S . -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DVCPKG_TARGET_TRIPLET=x64-windows-static-md `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+
+      - name: Build Plugin
+        shell: pwsh
+        run: |
+          cmake --build build --config Release
+
+      - name: Package Mod Files
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "package/SKSE/Plugins" -Force
+          Copy-Item "build/AutoShotClickCasting.dll" -Destination "package/SKSE/Plugins/"
+          
+          New-Item -ItemType Directory -Path "package/MCM/Config/AutoShotClickCasting" -Force
+          Copy-Item "mcm/config/config.json" -Destination "package/MCM/Config/AutoShotClickCasting/"
+          Copy-Item "mcm/config/settings.ini" -Destination "package/MCM/Config/AutoShotClickCasting/"
+          
+          New-Item -ItemType Directory -Path "package/Source/Scripts" -Force
+          Copy-Item "mcm/papyrus/AutoShotClickCasting_MCM.psc" -Destination "package/Source/Scripts/"
+          
+          Compress-Archive -Path "package/*" -DestinationPath "AutoShotClickCasting-v2.1.0.zip"
+
+      - name: Upload Binary & Package Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoShotClickCasting-v2.1.0-Artifacts
+          path: |
+            build/AutoShotClickCasting.dll
+            AutoShotClickCasting-v2.1.0.zip
+          retention-days: 30

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "commonlibsse-ng",
+  "version-semver": "9.3.0",
+  "port-version": 0,
+  "description": "CommonLibSSE NG supporting Skyrim SE, AE (1.6.x and 1.7.104), and VR.",
+  "homepage": "https://github.com/alandtse/CommonLibSSE-NG",
+  "license": "GPL-3.0-or-later",
+  "supports": "windows & x64",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    "directxmath",
+    "directxtk",
+    "fmt",
+    "nlohmann-json",
+    "rapidcsv",
+    "simpleini",
+    "spdlog",
+    "toml11",
+    "xbyak"
+  ]
+}

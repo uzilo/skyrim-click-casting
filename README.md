@@ -74,10 +74,9 @@ are read directly, not through Papyrus.
 
 ## Requirements
 
-- Skyrim SE/AE (built and tested on 1.6.1170; version-independent via Address Library, other
-  versions unconfirmed)
-- [SKSE64](https://skse.silverlock.org/)
-- [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444)
+- Skyrim SE/AE (compatible with 1.5.97, 1.6.640, 1.6.1170, and 1.7.104; version-independent via Address Library)
+- [SKSE64](https://skse.silverlock.org/) (use the build matching your game version: e.g. 2.2.6 for 1.6.1170, 2.3.1 for 1.7.104)
+- [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444) (v13+ required for 1.7.104 / Address Library Format 5)
 - [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000) — for the settings menu
 
 Keyboard and mouse only. Gamepad input is passed through untouched.
@@ -162,8 +161,9 @@ To package for a mod manager, zip the layout shown under
 [What's in the package](#whats-in-the-package) with the DLL at
 `SKSE\Plugins\AutoShotClickCasting.dll`.
 
-Dependencies are resolved through the vcpkg manifest (`vcpkg.json`), including CommonLibSSE-NG from
-the [colorglass registry](https://gitlab.com/colorglass/vcpkg-colorglass).
+Dependencies are resolved through the vcpkg manifest (`vcpkg.json`), utilizing CommonLibSSE-NG (via the local overlay port in `ports/commonlibsse-ng` from [alandtse/CommonLibSSE-NG](https://github.com/alandtse/CommonLibSSE-NG)).
+
+Automated builds are also configured via GitHub Actions in `.github/workflows/build.yml`.
 
 ## AI transparency
 
@@ -173,7 +173,7 @@ the full disclosure.
 
 ## Credits
 
-- [CommonLibSSE-NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) (MIT)
+- [CommonLibSSE-NG](https://github.com/alandtse/CommonLibSSE-NG) by CharmedBaryon & alandtse
 - [SKSE64](https://skse.silverlock.org/) team
 - [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444) by meh321
 - [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000) by Parapets
