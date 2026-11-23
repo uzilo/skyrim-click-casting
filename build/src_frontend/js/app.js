@@ -70,10 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
     updateFilterBadge();
   });
 
-  // Event: Checked changed
+  // Event: Checked changed (Localized mutation - only re-render if active filter requires it)
   window.addEventListener('lotd:checked-changed', () => {
-    const fRes = FilterEngine.filter(AppState.getState().filters);
-    UIRenderer.renderContent(fRes);
+    const facets = AppState.getState().filters.facets;
+    if (facets.status && facets.status.length > 0) {
+      const fRes = FilterEngine.filter(AppState.getState().filters);
+      UIRenderer.renderContent(fRes);
+    }
   });
 
   // Event: UI changed
@@ -177,6 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnMobileFilter && filterPanel) {
     btnMobileFilter.addEventListener('click', () => {
+      const willOpen = !filterPanel.classList.contains('open');
+      if (willOpen) {
+        window.__stagedFacets = JSON.parse(JSON.stringify(AppState.getState().filters.facets));
+        renderFilterControls();
+      } else {
+        commitStagedFilters();
+      }
       filterPanel.classList.toggle('open');
       if (tocSidebar) tocSidebar.classList.remove('open');
     });
@@ -312,9 +322,12 @@ function renderFilterControls() {
 
   // Action buttons
   html += `
-    <div style="display:flex; gap:8px; margin-top:12px;">
-      <button style="flex:1; padding:6px; background:var(--accent-gold-subtle); border:1px solid var(--accent-gold); color:var(--accent-gold); font-size:11px; font-weight:600; border-radius:var(--radius-sm);" onclick="AppState.updateFilters({ facets: { type:[], hold:[], loc:[], quest:[], sp:[], acq:[], hall:[], status:[] }, search: '' })">Xóa bộ lọc</button>
-      <button style="flex:1; padding:6px; background:var(--bg-card); border:1px solid var(--border-medium); font-size:11px; font-weight:600; border-radius:var(--radius-sm);" onclick="openExportModal()">Xuất / Nhập</button>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+      <button style="width:100%; padding:10px; background:var(--accent-gold); color:var(--text-inverse); font-size:12px; font-weight:700; border:none; border-radius:var(--radius-sm); cursor:pointer;" onclick="applyAndCloseFilters()">Áp dụng bộ lọc</button>
+      <div style="display:flex; gap:8px;">
+        <button style="flex:1; padding:6px; background:var(--accent-gold-subtle); border:1px solid var(--accent-gold); color:var(--accent-gold); font-size:11px; font-weight:600; border-radius:var(--radius-sm); cursor:pointer;" onclick="clearAllFilters()">Xóa bộ lọc</button>
+        <button style="flex:1; padding:6px; background:var(--bg-card); border:1px solid var(--border-medium); font-size:11px; font-weight:600; border-radius:var(--radius-sm); cursor:pointer;" onclick="openExportModal()">Xuất / Nhập</button>
+      </div>
     </div>
   `;
 
@@ -322,17 +335,43 @@ function renderFilterControls() {
 }
 
 function handleFacetChange(facetKey, val, isChecked) {
-  const current = AppState.getState().filters.facets;
-  const list = current[facetKey] ? [...current[facetKey]] : [];
+  const isMobile = window.innerWidth < 1024;
+  const facetsSource = isMobile ? (window.__stagedFacets || AppState.getState().filters.facets) : AppState.getState().filters.facets;
+  const list = facetsSource[facetKey] ? [...facetsSource[facetKey]] : [];
   if (isChecked) {
     if (!list.includes(val)) list.push(val);
   } else {
     const idx = list.indexOf(val);
     if (idx !== -1) list.splice(idx, 1);
   }
-  AppState.updateFilters({
-    facets: Object.assign({}, current, { [facetKey]: list })
-  });
+  const updated = Object.assign({}, facetsSource, { [facetKey]: list });
+  if (isMobile) {
+    window.__stagedFacets = updated;
+  } else {
+    AppState.updateFilters({ facets: updated });
+  }
+}
+
+function commitStagedFilters() {
+  if (window.__stagedFacets) {
+    const current = AppState.getState().filters.facets;
+    if (JSON.stringify(window.__stagedFacets) !== JSON.stringify(current)) {
+      AppState.updateFilters({ facets: window.__stagedFacets });
+    }
+    window.__stagedFacets = null;
+  }
+}
+
+function applyAndCloseFilters() {
+  commitStagedFilters();
+  const filterPanel = document.querySelector('.filter-panel');
+  if (filterPanel) filterPanel.classList.remove('open');
+}
+
+function clearAllFilters() {
+  window.__stagedFacets = null;
+  AppState.updateFilters({ facets: { type:[], hold:[], loc:[], quest:[], sp:[], acq:[], hall:[], status:[] }, search: '' });
+  renderFilterControls();
 }
 
 function resumeLastLocation() {
