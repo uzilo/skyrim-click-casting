@@ -1,0 +1,97 @@
+:root {
+  /* Nordic Archive Theme (Dark Mode - Default) */
+  --bg-canvas: #0b0f14;
+  --bg-surface: #121820;
+  --bg-card: #161f2b;
+  --bg-card-hover: #1c2736;
+  --bg-card-active: #223042;
+  --bg-overlay: rgba(11, 15, 20, 0.85);
+
+  --border-subtle: #243040;
+  --border-medium: #35475e;
+  --border-focus: #e5b358;
+
+  --accent-gold: #c9933b;
+  --accent-gold-hover: #dfa849;
+  --accent-gold-subtle: rgba(201, 147, 59, 0.15);
+  --accent-blue: #4d94e8;
+  --accent-blue-subtle: rgba(77, 148, 232, 0.15);
+  --accent-emerald: #2ea043;
+  --accent-emerald-subtle: rgba(46, 160, 67, 0.15);
+  --accent-ruby: #da3633;
+  --accent-ruby-subtle: rgba(218, 54, 51, 0.15);
+
+  --text-primary: #e6edf3;
+  --text-secondary: #9cb0c6;
+  --text-muted: #62758d;
+  --text-inverse: #0b0f14;
+
+  --font-display: "Cinzel", "Palatino", "Georgia", "Cambria", serif;
+  --font-body: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Density Defaults (Comfortable) */
+  --space-unit: 8px;
+  --item-py: 10px;
+  --item-px: 14px;
+  --font-size-item-title: 14px;
+  --font-size-item-sub: 12px;
+  --checkbox-size: 22px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 9px;
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+
+  --sidebar-w: 300px;
+  --filter-panel-w: 340px;
+  --topbar-h: 56px;
+  --bottombar-h: 60px;
+}
+
+[data-theme="parchment"] {
+  /* Ancient Parchment (Light Mode) */
+  --bg-canvas: #ede6d6;
+  --bg-surface: #e2dac6;
+  --bg-card: #f7f3e8;
+  --bg-card-hover: #ffffff;
+  --bg-card-active: #ece4d2;
+  --bg-overlay: rgba(237, 230, 214, 0.88);
+
+  --border-subtle: #d0c4ad;
+  --border-medium: #b8aa90;
+  --border-focus: #8c5b1b;
+
+  --accent-gold: #8c5b1b;
+  --accent-gold-hover: #6d4613;
+  --accent-gold-subtle: rgba(140, 91, 27, 0.15);
+  --accent-blue: #235d9f;
+  --accent-blue-subtle: rgba(35, 93, 159, 0.15);
+  --accent-emerald: #1c742e;
+  --accent-emerald-subtle: rgba(28, 116, 46, 0.15);
+  --accent-ruby: #a82220;
+
+  --text-primary: #261f18;
+  --text-secondary: #5e5244;
+  --text-muted: #8c7e6e;
+  --text-inverse: #ffffff;
+}
+
+/* Density: Compact */
+[data-density="compact"] {
+  --item-py: 6px;
+  --item-px: 10px;
+  --font-size-item-title: 13px;
+  --font-size-item-sub: 11px;
+  --checkbox-size: 19px;
+}
+
+/* Density: In-Game (Chữ to, một tay, vùng chạm cực lớn) */
+[data-density="ingame"] {
+  --item-py: 14px;
+  --item-px: 16px;
+  --font-size-item-title: 16px;
+  --font-size-item-sub: 13px;
+  --checkbox-size: 26px;
+}

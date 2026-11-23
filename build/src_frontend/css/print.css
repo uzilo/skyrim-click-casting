@@ -1,0 +1,47 @@
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 10pt;
+  }
+
+  .app-header,
+  .toc-sidebar,
+  .filter-panel,
+  .mobile-bottom-bar,
+  .dashboard-card,
+  .resume-toast-banner,
+  .undo-toast-banner,
+  .location-actions-btn,
+  .btn-toggle-tier3,
+  .view-tabs {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .location-card {
+    border: 1px solid #ccc !important;
+    margin-bottom: 12pt !important;
+    page-break-inside: avoid;
+  }
+
+  .item-row {
+    border-bottom: 0.5pt solid #ddd !important;
+    padding: 4pt 6pt !important;
+  }
+
+  .item-tier-3 {
+    display: flex !important;
+    background: #f9f9f9 !important;
+    border-left: 2pt solid #999 !important;
+  }
+
+  .item-check-box {
+    border: 1pt solid #000 !important;
+  }
+}
