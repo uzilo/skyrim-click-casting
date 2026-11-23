@@ -6,6 +6,8 @@ project(
     LANGUAGES CXX
 )
 
+find_package(spdlog CONFIG REQUIRED)
+find_package(directxtk CONFIG REQUIRED)
 find_package(CommonLibSSE CONFIG REQUIRED)
 
 # Header-only INI reader for the MCM settings files (Settings.cpp).

@@ -14,25 +14,22 @@ vcpkg_cmake_configure(
         -DSKSE_SUPPORT_XBYAK=ON
         -DENABLE_SKYRIM_SE=ON
         -DENABLE_SKYRIM_AE=ON
-        -DENABLE_SKYRIM_VR=ON
+        -DENABLE_SKYRIM_VR=OFF
 )
 
 vcpkg_cmake_install()
-vcpkg_cmake_config_fixup(PACKAGE_NAME CommonLibSSE CONFIG_PATH lib/cmake)
+vcpkg_cmake_config_fixup(PACKAGE_NAME CommonLibSSE CONFIG_PATH lib/cmake/CommonLibSSE)
 vcpkg_copy_pdbs()
 
-file(GLOB CMAKE_CONFIGS "${CURRENT_PACKAGES_DIR}/share/CommonLibSSE/CommonLibSSE/*.cmake")
-if(CMAKE_CONFIGS)
-    file(INSTALL ${CMAKE_CONFIGS} DESTINATION "${CURRENT_PACKAGES_DIR}/share/CommonLibSSE")
-endif()
-if(EXISTS "${SOURCE_PATH}/cmake/CommonLibSSE.cmake")
-    file(INSTALL "${SOURCE_PATH}/cmake/CommonLibSSE.cmake" DESTINATION "${CURRENT_PACKAGES_DIR}/share/CommonLibSSE")
+if(EXISTS "${CURRENT_PACKAGES_DIR}/share/CommonLibSSE/CommonLibSSEConfig.cmake")
+    vcpkg_replace_string(
+        "${CURRENT_PACKAGES_DIR}/share/CommonLibSSE/CommonLibSSEConfig.cmake"
+        "include(\"\${CMAKE_CURRENT_LIST_DIR}/CommonLibSSE-targets.cmake\")"
+        "include(CMakeFindDependencyMacro)\nfind_dependency(spdlog CONFIG)\nfind_dependency(directxtk CONFIG)\ninclude(\"\${CMAKE_CURRENT_LIST_DIR}/CommonLibSSE-targets.cmake\")"
+    )
 endif()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-if(EXISTS "${CURRENT_PACKAGES_DIR}/share/CommonLibSSE/CommonLibSSE")
-    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/share/CommonLibSSE/CommonLibSSE")
-endif()
 
 if(EXISTS "${SOURCE_PATH}/LICENSE")
     vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

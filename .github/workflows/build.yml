@@ -8,6 +8,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-cache
+
 jobs:
   build:
     name: Build AutoShotClickCasting.dll
@@ -27,13 +30,11 @@ jobs:
       - name: Setup Ninja
         uses: ninja-build/setup-ninja@v1
 
-      - name: Restore/Save vcpkg Cache
+      - name: Restore/Save vcpkg Binary Cache
         uses: actions/cache@v4
         with:
-          path: |
-            ${{ env.VCPKG_INSTALLATION_ROOT }}/installed
-            ~/.cache/vcpkg
-          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'ports/**') }}
+          path: ${{ github.workspace }}/vcpkg-cache
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ports/**') }}
           restore-keys: |
             vcpkg-${{ runner.os }}-
 
