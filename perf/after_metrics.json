@@ -1,0 +1,154 @@
+{
+  "x4": {
+    "S1_ColdLoad": {
+      "load_time_p50": 1072.847843170166,
+      "load_time_p95": 1291.5159225463867,
+      "tbt_p50": 413.0,
+      "tbt_p95": 539.0,
+      "dom_nodes": 2102,
+      "js_heap_mb": 20.7
+    },
+    "S2_SearchType": {
+      "duration_p50": 1139.186143875122,
+      "duration_p95": 1146.18821144104,
+      "tbt_p50": 0.0,
+      "tbt_p95": 37.39999999999999
+    },
+    "S3_VietnameseComposition": {
+      "duration_p50": 7.0018768310546875,
+      "duration_p95": 8.223342895507812,
+      "tbt_p50": 0.0,
+      "tbt_p95": 14.999999999999996
+    },
+    "S4_ClearSearch": {
+      "duration_p50": 5.162715911865234,
+      "duration_p95": 6.749057769775391,
+      "tbt_p50": 0.0,
+      "tbt_p95": 217.79999999999998
+    },
+    "S5_FilterPanelInteraction": {
+      "duration_p50": 1762.4924182891846,
+      "duration_p95": 1908.6635112762451,
+      "tbt_p50": 328.0,
+      "tbt_p95": 425.2
+    },
+    "S6_FilterMiddleList": {
+      "duration_p50": 1458.8003158569336,
+      "duration_p95": 1579.4994354248047,
+      "tbt_p50": 259.0,
+      "tbt_p95": 307.2
+    },
+    "S7_ToggleHideChecked2000": {
+      "duration_p50": 1966.4866924285889,
+      "duration_p95": 1978.867769241333,
+      "tbt_p50": 256.0,
+      "tbt_p95": 258.6
+    },
+    "S8_TickAndBatchUndo": {
+      "duration_p50": 773.0903625488281,
+      "duration_p95": 782.3320388793945,
+      "tbt_p50": 0.0,
+      "tbt_p95": 1.5999999999999996
+    },
+    "S9_FlingScroll": {
+      "duration_p50": 1005.1164627075195,
+      "duration_p95": 1036.6263389587402,
+      "tbt_p50": 0.0,
+      "tbt_p95": 13.599999999999998
+    },
+    "S10_TOCJump": {
+      "duration_p50": 860.0711822509766,
+      "duration_p95": 1002.888298034668,
+      "tbt_p50": 0.0,
+      "tbt_p95": 87.39999999999998
+    },
+    "S11_ExpandTier3": {
+      "duration_p50": 7.981061935424805,
+      "duration_p95": 17.652416229248047,
+      "tbt_p50": 0.0,
+      "tbt_p95": 0.0
+    },
+    "S12_ResumeReload": {
+      "duration_p50": 2426.837205886841,
+      "duration_p95": 2510.8723640441895,
+      "tbt_p50": 297.0,
+      "tbt_p95": 330.0
+    }
+  },
+  "x6": {
+    "S1_ColdLoad": {
+      "load_time_p50": 1801.7127513885498,
+      "load_time_p95": 2640.4696941375732,
+      "tbt_p50": 744.0,
+      "tbt_p95": 1137.1999999999998,
+      "dom_nodes": 2102,
+      "js_heap_mb": 20.7
+    },
+    "S2_SearchType": {
+      "duration_p50": 1322.908878326416,
+      "duration_p95": 1376.0645389556885,
+      "tbt_p50": 29.0,
+      "tbt_p95": 38.4
+    },
+    "S3_VietnameseComposition": {
+      "duration_p50": 9.33074951171875,
+      "duration_p95": 10.742425918579102,
+      "tbt_p50": 0.0,
+      "tbt_p95": 74.6
+    },
+    "S4_ClearSearch": {
+      "duration_p50": 14.632225036621094,
+      "duration_p95": 18.761920928955078,
+      "tbt_p50": 402.0,
+      "tbt_p95": 432.4
+    },
+    "S5_FilterPanelInteraction": {
+      "duration_p50": 2308.7596893310547,
+      "duration_p95": 2362.333822250366,
+      "tbt_p50": 845.0,
+      "tbt_p95": 883.4
+    },
+    "S6_FilterMiddleList": {
+      "duration_p50": 3448.0955600738525,
+      "duration_p95": 3921.0874557495117,
+      "tbt_p50": 1051.0,
+      "tbt_p95": 1360.2
+    },
+    "S7_ToggleHideChecked2000": {
+      "duration_p50": 2009.8485946655273,
+      "duration_p95": 2258.6514949798584,
+      "tbt_p50": 320.0,
+      "tbt_p95": 553.4
+    },
+    "S8_TickAndBatchUndo": {
+      "duration_p50": 1080.9340476989746,
+      "duration_p95": 1399.0929126739502,
+      "tbt_p50": 84.0,
+      "tbt_p95": 110.8
+    },
+    "S9_FlingScroll": {
+      "duration_p50": 1007.495641708374,
+      "duration_p95": 1033.6745738983154,
+      "tbt_p50": 0.0,
+      "tbt_p95": 23.999999999999993
+    },
+    "S10_TOCJump": {
+      "duration_p50": 869.6362972259521,
+      "duration_p95": 1939.0649318695066,
+      "tbt_p50": 0.0,
+      "tbt_p95": 656.1999999999998
+    },
+    "S11_ExpandTier3": {
+      "duration_p50": 8.764982223510742,
+      "duration_p95": 23.676395416259762,
+      "tbt_p50": 0.0,
+      "tbt_p95": 0.0
+    },
+    "S12_ResumeReload": {
+      "duration_p50": 2694.9214935302734,
+      "duration_p95": 2990.7349586486816,
+      "tbt_p50": 396.0,
+      "tbt_p95": 696.0
+    }
+  }
+}
