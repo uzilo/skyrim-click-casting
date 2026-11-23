@@ -1,6 +1,12 @@
 #include "Settings.h"
 
 #include <RE/Skyrim.h>
+#ifdef max
+#undef max
+#endif
+#ifdef min
+#undef min
+#endif
 #include <SimpleIni.h>
 #include <spdlog/spdlog.h>
 

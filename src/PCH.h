@@ -1,5 +1,12 @@
 #pragma once
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 // CommonLibSSE-NG's own precompiled header. Its library headers (e.g. REL/Relocation.h)
 // assume this prelude — which defines the `stl` namespace and pulls in <span>, <array>,
 // etc. — has been force-included first.
