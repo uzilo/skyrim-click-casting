@@ -88,16 +88,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Header Search Input
+  // Header Search Input with IME composition shielding & adaptive debounce
   const searchInput = document.getElementById('header-search-input');
   if (searchInput) {
     let sTimer = null;
+    let isComposing = false;
+    const debounceMs = window.innerWidth < 768 ? 240 : 180;
+
     searchInput.value = AppState.getState().filters.search || '';
-    searchInput.addEventListener('input', (e) => {
+
+    searchInput.addEventListener('compositionstart', () => {
+      isComposing = true;
+      if (sTimer) clearTimeout(sTimer);
+    });
+
+    searchInput.addEventListener('compositionend', (e) => {
+      isComposing = false;
       if (sTimer) clearTimeout(sTimer);
       sTimer = setTimeout(() => {
         AppState.updateFilters({ search: e.target.value });
-      }, 180);
+      }, debounceMs);
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      if (e.isComposing || isComposing) return;
+      if (sTimer) clearTimeout(sTimer);
+      sTimer = setTimeout(() => {
+        AppState.updateFilters({ search: e.target.value });
+      }, debounceMs);
+    });
+
+    // Support instant ESC to clear
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        if (sTimer) clearTimeout(sTimer);
+        AppState.updateFilters({ search: '' });
+      }
     });
   }
 
