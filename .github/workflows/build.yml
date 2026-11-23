@@ -27,9 +27,6 @@ jobs:
         with:
           arch: x64
 
-      - name: Setup Ninja
-        uses: ninja-build/setup-ninja@v1
-
       - name: Restore/Save vcpkg Binary Cache
         uses: actions/cache@v4
         with:
